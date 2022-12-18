@@ -1,0 +1,19 @@
+.container {
+  padding-top: 80px;
+}
+
+.modify {
+  width: 150px;
+  display: flex;
+  justify-content: space-between;
+}
+
+.drawerWarp {
+  display: flex;
+  height: 100%;
+  justify-content: center;
+}
+
+.drawerWarp .formWarp {
+  width: 40vw;
+}

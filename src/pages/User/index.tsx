@@ -17,7 +17,7 @@ const dataSource = [
   },
 ];
 
-const InfoPage: React.FC = () => {
+const UserPage: React.FC = () => {
   const [drawerOpen, setDrawerOpen] = useState<boolean>(false);
   const changeDrawerOpen = () => {
     setDrawerOpen(!drawerOpen);
@@ -123,4 +123,4 @@ const InfoPage: React.FC = () => {
   );
 };
 
-export default InfoPage;
+export default UserPage;

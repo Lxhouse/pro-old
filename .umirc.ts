@@ -34,6 +34,21 @@ export default defineConfig({
       path: '/info',
       component: './Info',
     },
+    {
+      name: '用户管理',
+      path: '/user',
+      component: './User',
+    },
+    {
+      name: '文章管理',
+      path: '/science',
+      component: './Science',
+    },
+    {
+      name: '公告管理',
+      path: '/entertainment',
+      component: './Entertainment',
+    },
   ],
   npmClient: 'yarn',
 });
