@@ -1,5 +1,5 @@
 import { PageContainer } from '@ant-design/pro-components';
-import { Button, Drawer, Form, Input, Table } from 'antd';
+import { Button, Drawer, Form, Input, Table, Radio, DatePicker } from 'antd';
 import { useEffect, useState } from 'react';
 import { $get } from '../../utils/request';
 import styles from './index.less';
@@ -12,7 +12,14 @@ const InfoPage: React.FC = () => {
     setDrawerOpen(!drawerOpen);
   };
   const getAllList = () => {
-    $get('/getUserList').then((res) => {
+    $get('/getUserInfoList').then((res) => {
+      if (Array.isArray(res)) {
+        setDataSource(res);
+      }
+    });
+  };
+  const deleteUser = (_id: number) => {
+    $get('/deleteUserInfo', { id: _id }).then((res) => {
       if (Array.isArray(res)) {
         setDataSource(res);
       }
@@ -21,13 +28,17 @@ const InfoPage: React.FC = () => {
   useEffect(() => {
     getAllList();
   }, [drawerOpen]);
+
   const onFinish = (values: any) => {
-    console.log('Success:', values);
+    $get('/addOrUpdateUserInfo', values).then(() => {
+      changeDrawerOpen();
+      getAllList();
+    });
   };
 
-  const onFinishFailed = (errorInfo: any) => {
-    console.log('Failed:', errorInfo);
-  };
+  //   const onFinishFailed = (errorInfo: any) => {
+  //     console.log('Failed:', errorInfo);
+  //   };
   const columns = [
     {
       title: '姓名',
@@ -35,25 +46,30 @@ const InfoPage: React.FC = () => {
       key: 'name',
     },
     {
-      title: '年龄',
-      dataIndex: 'age',
-      key: 'age',
+      title: '身份证',
+      dataIndex: 'idCard',
+      key: 'idCard',
     },
     {
-      title: '血压范围',
-      dataIndex: 'bloodScope',
-      key: 'bloodScope',
+      title: '电话号码',
+      dataIndex: 'phone',
+      key: 'phone',
     },
     {
-      title: '有无慢性疾病',
-      dataIndex: 'chroIll',
-      key: 'chroIll',
-      render: (_value: number) => (_value === 0 ? '无' : '有'),
+      title: '角色',
+      dataIndex: 'role',
+      key: 'role',
+      render: (_value: string) => _value,
     },
     {
-      title: '血压范围',
-      dataIndex: 'bloodScope',
-      key: 'bloodScope',
+      title: '密码',
+      dataIndex: 'pwd',
+      key: 'pwd',
+    },
+    {
+      title: '账号名',
+      dataIndex: 'username',
+      key: 'username',
     },
     {
       title: '记录日期',
@@ -61,54 +77,21 @@ const InfoPage: React.FC = () => {
       key: 'date',
     },
     {
-      title: '有无医生诊断报告',
-      dataIndex: 'healthImg',
-      key: 'healthImg',
-      render: (_value: number) => (_value === 0 ? '无' : '有'),
-    },
-    {
-      title: '健康等级',
-      dataIndex: 'healthLevel',
-      key: 'healthLevel',
-      render: (_value: number) => {
-        if (_value === 2) {
-          return '健康';
-        } else if (_value === 1) {
-          return '良好';
-        } else if (_value === 0) {
-          return '差';
-        }
-      },
-    },
-    {
-      title: '心率范围',
-      dataIndex: 'heartScope',
-      key: 'heartScope',
-    },
-    {
-      title: '身高',
-      dataIndex: 'height',
-      key: 'height',
-    },
-    {
-      title: '体重',
-      dataIndex: 'weight',
-      key: 'weight',
-    },
-    {
-      title: '有无病史',
-      dataIndex: 'medicalHistory',
-      key: 'medicalHistory',
-      render: (_value: number) => (_value === 0 ? '无' : '有'),
-    },
-    {
       title: '设置',
-      render: () => (
+      render: (_value: any) => (
         <div className={styles.modify}>
-          <Button type="primary" onClick={changeDrawerOpen}>
+          <Button
+            type="primary"
+            onClick={() => {
+              form.setFields(_value);
+              changeDrawerOpen();
+            }}
+          >
             修改
           </Button>
-          <Button danger>删除</Button>
+          <Button danger onClick={() => deleteUser(_value?.id)}>
+            删除
+          </Button>
         </div>
       ),
     },
@@ -117,7 +100,7 @@ const InfoPage: React.FC = () => {
   return (
     <PageContainer ghost>
       <div className={styles.container}>
-        <Button
+        {/* <Button
           type="primary"
           onClick={() => {
             form.resetFields();
@@ -125,7 +108,7 @@ const InfoPage: React.FC = () => {
           }}
         >
           新增
-        </Button>
+        </Button> */}
         <Table dataSource={dataSource} columns={columns} />;
       </div>
       <Drawer
@@ -145,27 +128,79 @@ const InfoPage: React.FC = () => {
               wrapperCol={{ span: 16 }}
               initialValues={{ remember: true }}
               onFinish={onFinish}
-              onFinishFailed={onFinishFailed}
+              //   onFinishFailed={onFinishFailed}
               autoComplete="off"
             >
               <Form.Item
-                label="Username"
+                label="姓名"
+                name="name"
+                // rules={[
+                //   { required: true, message: 'Please input your username!' },
+                // ]}
+              >
+                <Input />
+              </Form.Item>
+              <Form.Item
+                label="账号名"
                 name="username"
-                rules={[
-                  { required: true, message: 'Please input your username!' },
-                ]}
+                // rules={[
+                //   { required: true, message: 'Please input your username!' },
+                // ]}
+              >
+                <Input />
+              </Form.Item>
+              <Form.Item
+                hidden
+                // label="身高"
+                name="id"
+                // rules={[
+                //   { required: true, message: 'Please input your username!' },
+                // ]}
+              ></Form.Item>
+              <Form.Item
+                label="身份证"
+                name="idCard"
+                // rules={[
+                //   { required: true, message: 'Please input your username!' },
+                // ]}
               >
                 <Input />
               </Form.Item>
 
               <Form.Item
-                label="Password"
-                name="password"
-                rules={[
-                  { required: true, message: 'Please input your password!' },
-                ]}
+                label="电话号码"
+                name="phone"
+                // rules={[
+                //   { required: true, message: 'Please input your username!' },
+                // ]}
               >
-                <Input.Password />
+                <Input />
+              </Form.Item>
+              <Form.Item
+                label="密码"
+                name="pwd"
+                // rules={[
+                //   { required: true, message: 'Please input your username!' },
+                // ]}
+              >
+                <Input />
+              </Form.Item>
+              <Form.Item label="记录日期" name="date">
+                <DatePicker />
+              </Form.Item>
+              <Form.Item
+                label="角色"
+                name="role"
+                // rules={[
+                //   { required: true, message: 'Please input your username!' },
+                // ]}
+              >
+                <Radio.Group>
+                  <Radio value={'mainAdmin'}>主管理</Radio>
+                  <Radio value={'admin'}>管理员</Radio>
+                  <Radio value={'parent'}>父母</Radio>
+                  <Radio value={'child'}>儿子</Radio>
+                </Radio.Group>
               </Form.Item>
 
               <Form.Item wrapperCol={{ offset: 8, span: 16 }}>
@@ -174,7 +209,10 @@ const InfoPage: React.FC = () => {
                 </Button>
                 <Button
                   type="dashed"
-                  onClick={changeDrawerOpen}
+                  onClick={() => {
+                    form.resetFields();
+                    changeDrawerOpen();
+                  }}
                   style={{ marginLeft: '10px' }}
                 >
                   关闭

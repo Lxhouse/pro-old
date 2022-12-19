@@ -1,34 +1,45 @@
 import { PageContainer } from '@ant-design/pro-components';
-import { Table, Button, Drawer, Form, Input } from 'antd';
-import { useState } from 'react';
+import { Button, Drawer, Form, Input, Table, Radio, DatePicker } from 'antd';
+import { useEffect, useState } from 'react';
+import { $get } from '../../utils/request';
 import styles from './index.less';
-const dataSource = [
-  {
-    key: '1',
-    name: '胡彦斌',
-    age: 32,
-    address: '西湖区湖底公园1号',
-  },
-  {
-    key: '2',
-    name: '胡彦祖',
-    age: 42,
-    address: '西湖区湖底公园1号',
-  },
-];
 
 const UserPage: React.FC = () => {
+  const [form] = Form.useForm();
   const [drawerOpen, setDrawerOpen] = useState<boolean>(false);
+  const [dataSource, setDataSource] = useState<any[]>([]);
   const changeDrawerOpen = () => {
     setDrawerOpen(!drawerOpen);
   };
-  const onFinish = (values: any) => {
-    console.log('Success:', values);
+  const getAllList = () => {
+    $get('/getUserList').then((res) => {
+      if (Array.isArray(res)) {
+        setDataSource(res);
+      }
+    });
+  };
+  const deleteUser = (_id: number) => {
+    $get('/deleteUser', { id: _id }).then((res) => {
+      if (Array.isArray(res)) {
+        setDataSource(res);
+      }
+    });
   };
 
-  const onFinishFailed = (errorInfo: any) => {
-    console.log('Failed:', errorInfo);
+  useEffect(() => {
+    getAllList();
+  }, [drawerOpen]);
+
+  const onFinish = (values: any) => {
+    $get('/updateUser', values).then(() => {
+      changeDrawerOpen();
+      getAllList();
+    });
   };
+
+  //   const onFinishFailed = (errorInfo: any) => {
+  //     console.log('Failed:', errorInfo);
+  //   };
   const columns = [
     {
       title: '姓名',
@@ -41,18 +52,83 @@ const UserPage: React.FC = () => {
       key: 'age',
     },
     {
-      title: '住址',
-      dataIndex: 'address',
-      key: 'address',
+      title: '血压范围',
+      dataIndex: 'bloodScope',
+      key: 'bloodScope',
+    },
+    {
+      title: '有无慢性疾病',
+      dataIndex: 'chroIll',
+      key: 'chroIll',
+      render: (_value: number) => (_value === 0 ? '无' : '有'),
+    },
+    {
+      title: '血压范围',
+      dataIndex: 'bloodScope',
+      key: 'bloodScope',
+    },
+    {
+      title: '记录日期',
+      dataIndex: 'date',
+      key: 'date',
+    },
+    {
+      title: '有无医生诊断报告',
+      dataIndex: 'healthImg',
+      key: 'healthImg',
+      render: (_value: number) => (_value === 0 ? '无' : '有'),
+    },
+    {
+      title: '健康等级',
+      dataIndex: 'healthLevel',
+      key: 'healthLevel',
+      render: (_value: number) => {
+        if (_value === 2) {
+          return '健康';
+        } else if (_value === 1) {
+          return '良好';
+        } else if (_value === 0) {
+          return '差';
+        }
+      },
+    },
+    {
+      title: '心率范围',
+      dataIndex: 'heartScope',
+      key: 'heartScope',
+    },
+    {
+      title: '身高',
+      dataIndex: 'height',
+      key: 'height',
+    },
+    {
+      title: '体重',
+      dataIndex: 'weight',
+      key: 'weight',
+    },
+    {
+      title: '有无病史',
+      dataIndex: 'medicalHistory',
+      key: 'medicalHistory',
+      render: (_value: number) => (_value === 0 ? '无' : '有'),
     },
     {
       title: '设置',
-      render: () => (
+      render: (_value: any) => (
         <div className={styles.modify}>
-          <Button type="primary" onClick={changeDrawerOpen}>
+          <Button
+            type="primary"
+            onClick={() => {
+              form.setFields(_value);
+              changeDrawerOpen();
+            }}
+          >
             修改
           </Button>
-          <Button danger>删除</Button>
+          <Button danger onClick={() => deleteUser(_value?.id)}>
+            删除
+          </Button>
         </div>
       ),
     },
@@ -61,6 +137,15 @@ const UserPage: React.FC = () => {
   return (
     <PageContainer ghost>
       <div className={styles.container}>
+        {/* <Button
+          type="primary"
+          onClick={() => {
+            form.resetFields();
+            changeDrawerOpen();
+          }}
+        >
+          新增
+        </Button> */}
         <Table dataSource={dataSource} columns={columns} />;
       </div>
       <Drawer
@@ -75,41 +160,130 @@ const UserPage: React.FC = () => {
         <div className={styles.drawerWarp}>
           <div className={styles.formWarp}>
             <Form
-              name=""
+              form={form}
               labelCol={{ span: 8 }}
               wrapperCol={{ span: 16 }}
               initialValues={{ remember: true }}
               onFinish={onFinish}
-              onFinishFailed={onFinishFailed}
+              //   onFinishFailed={onFinishFailed}
               autoComplete="off"
             >
               <Form.Item
-                label="Username"
-                name="username"
-                rules={[
-                  { required: true, message: 'Please input your username!' },
-                ]}
+                hidden
+                // label="身高"
+                name="id"
+                // rules={[
+                //   { required: true, message: 'Please input your username!' },
+                // ]}
+              ></Form.Item>
+              <Form.Item
+                label="身高"
+                name="height"
+                // rules={[
+                //   { required: true, message: 'Please input your username!' },
+                // ]}
               >
                 <Input />
               </Form.Item>
-
               <Form.Item
-                label="Password"
-                name="password"
-                rules={[
-                  { required: true, message: 'Please input your password!' },
-                ]}
+                label="体重"
+                name="weight"
+                // rules={[
+                //   { required: true, message: 'Please input your username!' },
+                // ]}
               >
-                <Input.Password />
+                <Input />
+              </Form.Item>
+              <Form.Item
+                label="年龄"
+                name="age"
+                // rules={[
+                //   { required: true, message: 'Please input your username!' },
+                // ]}
+              >
+                <Input />
+              </Form.Item>
+              <Form.Item
+                label="血压范围"
+                name="bloodScope"
+                // rules={[
+                //   { required: true, message: 'Please input your username!' },
+                // ]}
+              >
+                <Input />
+              </Form.Item>
+              <Form.Item label="日期" name="date">
+                <DatePicker />
+              </Form.Item>
+              <Form.Item
+                label="有无慢性疾病"
+                name="chroIll"
+                // rules={[
+                //   { required: true, message: 'Please input your username!' },
+                // ]}
+              >
+                <Radio.Group>
+                  <Radio value={0}>无</Radio>
+                  <Radio value={1}>有</Radio>
+                </Radio.Group>
               </Form.Item>
 
+              <Form.Item
+                label="有无医生诊断报告"
+                name="healthImg"
+                // rules={[
+                //   { required: true, message: 'Please input your username!' },
+                // ]}
+              >
+                <Radio.Group>
+                  <Radio value={0}>无</Radio>
+                  <Radio value={1}>有</Radio>
+                </Radio.Group>
+              </Form.Item>
+              <Form.Item
+                label="健康等级"
+                name="healthLevel"
+                // rules={[
+                //   { required: true, message: 'Please input your username!' },
+                // ]}
+              >
+                <Radio.Group>
+                  <Radio value={2}>健康</Radio>
+                  <Radio value={1}>良好</Radio>
+                  <Radio value={0}>差</Radio>
+                </Radio.Group>
+              </Form.Item>
+              <Form.Item
+                label="心率范围"
+                name="heartScope"
+                // rules={[
+                //   { required: true, message: 'Please input your username!' },
+                // ]}
+              >
+                <Input />
+              </Form.Item>
+              <Form.Item
+                label="有无病史"
+                name="heartScope"
+                // rules={[
+                //   { required: true, message: 'Please input your username!' },
+                // ]}
+              >
+                <Radio.Group>
+                  <Radio value={0}>无</Radio>
+                  <Radio value={1}>有</Radio>
+                </Radio.Group>
+              </Form.Item>
               <Form.Item wrapperCol={{ offset: 8, span: 16 }}>
                 <Button type="primary" htmlType="submit">
                   提交
                 </Button>
                 <Button
                   type="dashed"
-                  onClick={changeDrawerOpen}
+                  onClick={() => {
+                    form.resetFields();
+                    changeDrawerOpen();
+                  }}
                   style={{ marginLeft: '10px' }}
                 >
                   关闭
