@@ -30,12 +30,12 @@ export default defineConfig({
     //   component: './Table',
     // },
     {
-      name: '老人管理',
+      name: '用户管理',
       path: '/info',
       component: './Info',
     },
     {
-      name: '用户管理',
+      name: '老人管理',
       path: '/user',
       component: './User',
     },

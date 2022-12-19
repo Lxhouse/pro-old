@@ -15,7 +15,8 @@
     "@ant-design/pro-components": "^2.0.1",
     "@umijs/max": "^4.0.36",
     "antd": "^5.0.0",
-    "axios": "^1.2.1"
+    "axios": "^1.2.1",
+    "braft-editor": "^2.3.9"
   },
   "devDependencies": {
     "@types/react": "^18.0.0",

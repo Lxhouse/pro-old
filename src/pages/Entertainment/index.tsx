@@ -1,34 +1,45 @@
 import { PageContainer } from '@ant-design/pro-components';
-import { Table, Button, Drawer, Form, Input } from 'antd';
-import { useState } from 'react';
+import { Button, Drawer, Form, Table, Input } from 'antd';
+import { useEffect, useState } from 'react';
+import { $get } from '../../utils/request';
 import styles from './index.less';
-const dataSource = [
-  {
-    key: '1',
-    name: '胡彦斌',
-    age: 32,
-    address: '西湖区湖底公园1号',
-  },
-  {
-    key: '2',
-    name: '胡彦祖',
-    age: 42,
-    address: '西湖区湖底公园1号',
-  },
-];
 
+const { TextArea } = Input;
 const EntertainmentPage: React.FC = () => {
+  const [form] = Form.useForm();
   const [drawerOpen, setDrawerOpen] = useState<boolean>(false);
+  const [dataSource, setDataSource] = useState<any[]>([]);
   const changeDrawerOpen = () => {
     setDrawerOpen(!drawerOpen);
   };
+  const getAllList = () => {
+    $get('/getUserInfoList').then((res) => {
+      if (Array.isArray(res)) {
+        setDataSource(res);
+      }
+    });
+  };
+  const deleteUser = (_id: number) => {
+    $get('/deleteUserInfo', { id: _id }).then((res) => {
+      if (Array.isArray(res)) {
+        setDataSource(res);
+      }
+    });
+  };
+  useEffect(() => {
+    getAllList();
+  }, [drawerOpen]);
+
   const onFinish = (values: any) => {
-    console.log('Success:', values);
+    $get('/addOrUpdateUserInfo', values).then(() => {
+      changeDrawerOpen();
+      getAllList();
+    });
   };
 
-  const onFinishFailed = (errorInfo: any) => {
-    console.log('Failed:', errorInfo);
-  };
+  //   const onFinishFailed = (errorInfo: any) => {
+  //     console.log('Failed:', errorInfo);
+  //   };
   const columns = [
     {
       title: '姓名',
@@ -36,23 +47,27 @@ const EntertainmentPage: React.FC = () => {
       key: 'name',
     },
     {
-      title: '年龄',
-      dataIndex: 'age',
-      key: 'age',
+      title: '公告内容',
+      dataIndex: 'content',
+      key: 'content',
     },
-    {
-      title: '住址',
-      dataIndex: 'address',
-      key: 'address',
-    },
+
     {
       title: '设置',
-      render: () => (
+      render: (_value: any) => (
         <div className={styles.modify}>
-          <Button type="primary" onClick={changeDrawerOpen}>
+          <Button
+            type="primary"
+            onClick={() => {
+              form.setFields(_value);
+              changeDrawerOpen();
+            }}
+          >
             修改
           </Button>
-          <Button danger>删除</Button>
+          <Button danger onClick={() => deleteUser(_value?.id)}>
+            删除
+          </Button>
         </div>
       ),
     },
@@ -61,6 +76,15 @@ const EntertainmentPage: React.FC = () => {
   return (
     <PageContainer ghost>
       <div className={styles.container}>
+        <Button
+          type="primary"
+          onClick={() => {
+            form.resetFields();
+            changeDrawerOpen();
+          }}
+        >
+          新增
+        </Button>
         <Table dataSource={dataSource} columns={columns} />;
       </div>
       <Drawer
@@ -75,32 +99,16 @@ const EntertainmentPage: React.FC = () => {
         <div className={styles.drawerWarp}>
           <div className={styles.formWarp}>
             <Form
-              name=""
+              form={form}
               labelCol={{ span: 8 }}
               wrapperCol={{ span: 16 }}
               initialValues={{ remember: true }}
               onFinish={onFinish}
-              onFinishFailed={onFinishFailed}
+              //   onFinishFailed={onFinishFailed}
               autoComplete="off"
             >
-              <Form.Item
-                label="Username"
-                name="username"
-                rules={[
-                  { required: true, message: 'Please input your username!' },
-                ]}
-              >
-                <Input />
-              </Form.Item>
-
-              <Form.Item
-                label="Password"
-                name="password"
-                rules={[
-                  { required: true, message: 'Please input your password!' },
-                ]}
-              >
-                <Input.Password />
+              <Form.Item label="公告内容" name="content">
+                <TextArea rows={4} maxLength={6} />
               </Form.Item>
 
               <Form.Item wrapperCol={{ offset: 8, span: 16 }}>
@@ -109,7 +117,10 @@ const EntertainmentPage: React.FC = () => {
                 </Button>
                 <Button
                   type="dashed"
-                  onClick={changeDrawerOpen}
+                  onClick={() => {
+                    form.resetFields();
+                    changeDrawerOpen();
+                  }}
                   style={{ marginLeft: '10px' }}
                 >
                   关闭
