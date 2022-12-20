@@ -12,14 +12,14 @@ const InfoPage: React.FC = () => {
     setDrawerOpen(!drawerOpen);
   };
   const getAllList = () => {
-    $get('/getUserInfoList').then((res) => {
+    $get('/admin/getUserInfoList').then((res) => {
       if (Array.isArray(res)) {
         setDataSource(res);
       }
     });
   };
   const deleteUser = (_id: number) => {
-    $get('/deleteUserInfo', { id: _id }).then((res) => {
+    $get('/admin/deleteUserInfo', { id: _id }).then((res) => {
       if (Array.isArray(res)) {
         setDataSource(res);
       }
@@ -30,7 +30,7 @@ const InfoPage: React.FC = () => {
   }, [drawerOpen]);
 
   const onFinish = (values: any) => {
-    $get('/addOrUpdateUserInfo', values).then(() => {
+    $get('/admin/addOrUpdateUserInfo', values).then(() => {
       changeDrawerOpen();
       getAllList();
     });
@@ -124,9 +124,9 @@ const InfoPage: React.FC = () => {
           <div className={styles.formWarp}>
             <Form
               form={form}
-              labelCol={{ span: 8 }}
-              wrapperCol={{ span: 16 }}
-              initialValues={{ remember: true }}
+              //   labelCol={{ span: 8 }}
+              //   wrapperCol={{ span: 16 }}
+              //   initialValues={{ remember: true }}
               onFinish={onFinish}
               //   onFinishFailed={onFinishFailed}
               autoComplete="off"

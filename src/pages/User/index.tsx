@@ -12,14 +12,14 @@ const UserPage: React.FC = () => {
     setDrawerOpen(!drawerOpen);
   };
   const getAllList = () => {
-    $get('/getUserList').then((res) => {
+    $get('/admin/getUserList').then((res) => {
       if (Array.isArray(res)) {
         setDataSource(res);
       }
     });
   };
   const deleteUser = (_id: number) => {
-    $get('/deleteUser', { id: _id }).then((res) => {
+    $get('/admin/deleteUser', { id: _id }).then((res) => {
       if (Array.isArray(res)) {
         setDataSource(res);
       }
@@ -31,7 +31,7 @@ const UserPage: React.FC = () => {
   }, [drawerOpen]);
 
   const onFinish = (values: any) => {
-    $get('/updateUser', values).then(() => {
+    $get('/admin/updateUser', values).then(() => {
       changeDrawerOpen();
       getAllList();
     });

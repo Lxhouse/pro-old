@@ -45,7 +45,7 @@ export default defineConfig({
       component: './Science',
     },
     {
-      name: '公告管理',
+      name: '社区管理',
       path: '/entertainment',
       component: './Entertainment',
     },

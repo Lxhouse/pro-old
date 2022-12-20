@@ -1,7 +1,7 @@
 import { PageContainer } from '@ant-design/pro-components';
-import { Button, Drawer, Form, Table } from 'antd';
+import { Button, Drawer, Form, Input, Table } from 'antd';
 import { useEffect, useState } from 'react';
-import { $get } from '../../utils/request';
+import { $get, $post } from '../../utils/request';
 import styles from './index.less';
 import RichText from './RichText';
 
@@ -13,14 +13,14 @@ const SciencePage: React.FC = () => {
     setDrawerOpen(!drawerOpen);
   };
   const getAllList = () => {
-    $get('/getUserInfoList').then((res) => {
-      if (Array.isArray(res)) {
-        setDataSource(res);
+    $get('/communicate/getArticleList').then((res) => {
+      if (Array.isArray(res.data)) {
+        setDataSource(res.data);
       }
     });
   };
   const deleteUser = (_id: number) => {
-    $get('/deleteUserInfo', { id: _id }).then((res) => {
+    $get('/admin/deleteAnnouncement', { artId: _id }).then((res) => {
       if (Array.isArray(res)) {
         setDataSource(res);
       }
@@ -31,7 +31,7 @@ const SciencePage: React.FC = () => {
   }, [drawerOpen]);
 
   const onFinish = (values: any) => {
-    $get('/addOrUpdateUserInfo', values).then(() => {
+    $post('/admin/addOrUpdateAnnouncement', values).then(() => {
       changeDrawerOpen();
       getAllList();
     });
@@ -47,11 +47,15 @@ const SciencePage: React.FC = () => {
       key: 'name',
     },
     {
-      title: '文章内容',
-      dataIndex: 'content',
-      key: 'content',
+      title: '文章标题',
+      dataIndex: 'title',
+      key: 'title',
     },
-
+    {
+      title: '文章简介',
+      dataIndex: 'introduce',
+      key: 'introduce',
+    },
     {
       title: '设置',
       render: (_value: any) => (
@@ -59,13 +63,17 @@ const SciencePage: React.FC = () => {
           <Button
             type="primary"
             onClick={() => {
-              form.setFields(_value);
-              changeDrawerOpen();
+              $get('/communicate/getArtDetails', { artId: _value?.artId }).then(
+                (res) => {
+                  form.setFields(res.data);
+                  changeDrawerOpen();
+                },
+              );
             }}
           >
             修改
           </Button>
-          <Button danger onClick={() => deleteUser(_value?.id)}>
+          <Button danger onClick={() => deleteUser(_value?.artId)}>
             删除
           </Button>
         </div>
@@ -100,13 +108,29 @@ const SciencePage: React.FC = () => {
           <div className={styles.formWarp}>
             <Form
               form={form}
-              labelCol={{ span: 8 }}
-              wrapperCol={{ span: 16 }}
-              initialValues={{ remember: true }}
               onFinish={onFinish}
               //   onFinishFailed={onFinishFailed}
               autoComplete="off"
             >
+              <Form.Item
+                label=""
+                hidden
+                name="artId"
+                // rules={[
+                //   { required: true, message: 'Please input your username!' },
+                // ]}
+              >
+                <Input />
+              </Form.Item>
+              <Form.Item
+                label="文章标题"
+                name="title"
+                // rules={[
+                //   { required: true, message: 'Please input your username!' },
+                // ]}
+              >
+                <Input />
+              </Form.Item>
               <Form.Item
                 label="文章内容"
                 name="content"

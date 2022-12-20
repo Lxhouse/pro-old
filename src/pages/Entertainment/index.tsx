@@ -13,17 +13,15 @@ const EntertainmentPage: React.FC = () => {
     setDrawerOpen(!drawerOpen);
   };
   const getAllList = () => {
-    $get('/getUserInfoList').then((res) => {
+    $get('/communicate/getCollectiveList').then((res) => {
       if (Array.isArray(res)) {
         setDataSource(res);
       }
     });
   };
   const deleteUser = (_id: number) => {
-    $get('/deleteUserInfo', { id: _id }).then((res) => {
-      if (Array.isArray(res)) {
-        setDataSource(res);
-      }
+    $get('/admin/deleteCommunicate', { postId: _id }).then(() => {
+      getAllList();
     });
   };
   useEffect(() => {
@@ -42,30 +40,26 @@ const EntertainmentPage: React.FC = () => {
   //   };
   const columns = [
     {
-      title: '姓名',
+      title: '发表人',
       dataIndex: 'name',
       key: 'name',
     },
     {
-      title: '公告内容',
+      title: '帖子内容',
       dataIndex: 'content',
       key: 'content',
+    },
+    {
+      title: '点赞数',
+      dataIndex: 'likeNum',
+      key: 'likeNum',
     },
 
     {
       title: '设置',
       render: (_value: any) => (
         <div className={styles.modify}>
-          <Button
-            type="primary"
-            onClick={() => {
-              form.setFields(_value);
-              changeDrawerOpen();
-            }}
-          >
-            修改
-          </Button>
-          <Button danger onClick={() => deleteUser(_value?.id)}>
+          <Button danger onClick={() => deleteUser(_value?.messageID)}>
             删除
           </Button>
         </div>
@@ -76,15 +70,6 @@ const EntertainmentPage: React.FC = () => {
   return (
     <PageContainer ghost>
       <div className={styles.container}>
-        <Button
-          type="primary"
-          onClick={() => {
-            form.resetFields();
-            changeDrawerOpen();
-          }}
-        >
-          新增
-        </Button>
         <Table dataSource={dataSource} columns={columns} />;
       </div>
       <Drawer
@@ -100,9 +85,9 @@ const EntertainmentPage: React.FC = () => {
           <div className={styles.formWarp}>
             <Form
               form={form}
-              labelCol={{ span: 8 }}
-              wrapperCol={{ span: 16 }}
-              initialValues={{ remember: true }}
+              //   labelCol={{ span: 8 }}
+              //   wrapperCol={{ span: 16 }}
+              //   initialValues={{ remember: true }}
               onFinish={onFinish}
               //   onFinishFailed={onFinishFailed}
               autoComplete="off"
