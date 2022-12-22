@@ -13,9 +13,9 @@ const EntertainmentPage: React.FC = () => {
     setDrawerOpen(!drawerOpen);
   };
   const getAllList = () => {
-    $get('/communicate/getCollectiveList').then((res) => {
-      if (Array.isArray(res)) {
-        setDataSource(res);
+    $get('/admin/getCollectiveList').then((res) => {
+      if (Array.isArray(res.data.data)) {
+        setDataSource(res.data.data);
       }
     });
   };

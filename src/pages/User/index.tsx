@@ -1,7 +1,8 @@
 import { PageContainer } from '@ant-design/pro-components';
 import { Button, Drawer, Form, Input, Table, Radio, DatePicker } from 'antd';
 import { useEffect, useState } from 'react';
-import { $get } from '../../utils/request';
+import moment from 'moment';
+import { $get, $post } from '../../utils/request';
 import styles from './index.less';
 
 const UserPage: React.FC = () => {
@@ -11,32 +12,56 @@ const UserPage: React.FC = () => {
   const changeDrawerOpen = () => {
     setDrawerOpen(!drawerOpen);
   };
+  // const getAllList = () => {
+  //   $get('/admin/getUserList').then((res) => {
+  //     if (Array.isArray(res)) {
+  //       setDataSource(res);
+  //     }
+  //   });
+  // };
+  // const deleteUser = (_id: number) => {
+  //   $get('/admin/deleteUser', { id: _id }).then((res) => {
+  //     if (Array.isArray(res)) {
+  //       setDataSource(res);
+  //     }
+  //   });
+  // };
+
+  // useEffect(() => {
+  //   getAllList();
+  // }, [drawerOpen]);
+
+  // const onFinish = (values: any) => {
+  //   $get('/admin/updateUser', values).then(() => {
+  //     changeDrawerOpen();
+  //     getAllList();
+  //   });
+  // };
+
   const getAllList = () => {
-    $get('/admin/getUserList').then((res) => {
-      if (Array.isArray(res)) {
-        setDataSource(res);
+    $get('/admin/getUserInfoList').then((res) => {
+      if (Array.isArray(res.data.data)) {
+        setDataSource(res.data.data);
       }
     });
   };
   const deleteUser = (_id: number) => {
-    $get('/admin/deleteUser', { id: _id }).then((res) => {
+    $post('/admin/deleteUserInfo', { id: _id }).then((res) => {
       if (Array.isArray(res)) {
         setDataSource(res);
       }
     });
   };
-
   useEffect(() => {
     getAllList();
   }, [drawerOpen]);
 
   const onFinish = (values: any) => {
-    $get('/admin/updateUser', values).then(() => {
+    $post('/admin/addOrUpdateUserInfo', values).then(() => {
       changeDrawerOpen();
       getAllList();
     });
   };
-
   //   const onFinishFailed = (errorInfo: any) => {
   //     console.log('Failed:', errorInfo);
   //   };
@@ -67,11 +92,11 @@ const UserPage: React.FC = () => {
       dataIndex: 'bloodScope',
       key: 'bloodScope',
     },
-    {
-      title: '记录日期',
-      dataIndex: 'date',
-      key: 'date',
-    },
+    // {
+    //   title: '记录日期',
+    //   dataIndex: 'date',
+    //   key: 'date',
+    // },
     {
       title: '有无医生诊断报告',
       dataIndex: 'healthImg',
@@ -120,7 +145,7 @@ const UserPage: React.FC = () => {
           <Button
             type="primary"
             onClick={() => {
-              form.setFields(_value);
+              form.setFieldsValue({ ..._value, date: moment(_value.date) });
               changeDrawerOpen();
             }}
           >

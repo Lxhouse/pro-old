@@ -14,8 +14,8 @@ const SciencePage: React.FC = () => {
   };
   const getAllList = () => {
     $get('/communicate/getArticleList').then((res) => {
-      if (Array.isArray(res.data)) {
-        setDataSource(res.data);
+      if (Array.isArray(res.data.data)) {
+        setDataSource(res.data.data);
       }
     });
   };
@@ -63,12 +63,12 @@ const SciencePage: React.FC = () => {
           <Button
             type="primary"
             onClick={() => {
-              $get('/communicate/getArtDetails', { artId: _value?.artId }).then(
-                (res) => {
-                  form.setFields(res.data);
-                  changeDrawerOpen();
-                },
-              );
+              $post('/communicate/getArtDetails', {
+                artId: _value?.artId,
+              }).then((res) => {
+                form.setFieldsValue(res.data.data);
+                changeDrawerOpen();
+              });
             }}
           >
             修改

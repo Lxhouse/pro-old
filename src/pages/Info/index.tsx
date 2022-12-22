@@ -1,7 +1,8 @@
 import { PageContainer } from '@ant-design/pro-components';
 import { Button, Drawer, Form, Input, Table, Radio, DatePicker } from 'antd';
 import { useEffect, useState } from 'react';
-import { $get } from '../../utils/request';
+import moment from 'moment';
+import { $get, $post } from '../../utils/request';
 import styles from './index.less';
 
 const InfoPage: React.FC = () => {
@@ -11,26 +12,53 @@ const InfoPage: React.FC = () => {
   const changeDrawerOpen = () => {
     setDrawerOpen(!drawerOpen);
   };
+  // const getAllList = () => {
+  //   $get('/admin/getUserInfoList').then((res) => {
+  //     if (Array.isArray(res)) {
+  //       setDataSource(res);
+  //     }
+  //   });
+  // };
+  // const deleteUser = (_id: number) => {
+  //   $get('/admin/deleteUserInfo', { id: _id }).then((res) => {
+  //     if (Array.isArray(res)) {
+  //       setDataSource(res);
+  //     }
+  //   });
+  // };
+  // useEffect(() => {
+  //   getAllList();
+  // }, [drawerOpen]);
+
+  // const onFinish = (values: any) => {
+  //   $get('/admin/addOrUpdateUserInfo', values).then(() => {
+  //     changeDrawerOpen();
+  //     getAllList();
+  //   });
+  // };
+
   const getAllList = () => {
-    $get('/admin/getUserInfoList').then((res) => {
-      if (Array.isArray(res)) {
-        setDataSource(res);
+    $get('/admin/getUserList').then((res) => {
+      if (Array.isArray(res.data.data)) {
+        setDataSource(res.data.data);
       }
     });
   };
   const deleteUser = (_id: number) => {
-    $get('/admin/deleteUserInfo', { id: _id }).then((res) => {
+    $post('/admin/deleteUser', { id: _id }).then((res) => {
       if (Array.isArray(res)) {
         setDataSource(res);
       }
     });
   };
+
   useEffect(() => {
     getAllList();
   }, [drawerOpen]);
 
   const onFinish = (values: any) => {
-    $get('/admin/addOrUpdateUserInfo', values).then(() => {
+    console.log('##' + values);
+    $post('/admin/updateUser', values).then(() => {
       changeDrawerOpen();
       getAllList();
     });
@@ -75,6 +103,9 @@ const InfoPage: React.FC = () => {
       title: '记录日期',
       dataIndex: 'date',
       key: 'date',
+      render: (_val: string) => {
+        return moment(_val).format('YYYY-MM-DD');
+      },
     },
     {
       title: '设置',
@@ -83,7 +114,8 @@ const InfoPage: React.FC = () => {
           <Button
             type="primary"
             onClick={() => {
-              form.setFields(_value);
+              console.log('######:', _value);
+              form.setFieldsValue({ ..._value, date: moment(_value.date) });
               changeDrawerOpen();
             }}
           >
