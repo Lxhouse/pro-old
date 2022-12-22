@@ -1,5 +1,14 @@
 import { PageContainer } from '@ant-design/pro-components';
-import { Button, Drawer, Form, Input, Table, Radio, DatePicker } from 'antd';
+import {
+  Button,
+  Drawer,
+  Form,
+  Input,
+  Table,
+  Radio,
+  DatePicker,
+  Popconfirm,
+} from 'antd';
 import { useEffect, useState } from 'react';
 import moment from 'moment';
 import { $get, $post } from '../../utils/request';
@@ -45,10 +54,8 @@ const InfoPage: React.FC = () => {
     });
   };
   const deleteUser = (_id: number) => {
-    $post('/admin/deleteUser', { id: _id }).then((res) => {
-      if (Array.isArray(res)) {
-        setDataSource(res);
-      }
+    $post('/admin/deleteUser', { id: _id }).then(() => {
+      getAllList();
     });
   };
 
@@ -121,9 +128,15 @@ const InfoPage: React.FC = () => {
           >
             修改
           </Button>
-          <Button danger onClick={() => deleteUser(_value?.id)}>
-            删除
-          </Button>
+          <Popconfirm
+            title="确定删除吗？"
+            onConfirm={() => deleteUser(_value?.id)}
+            onCancel={() => {}}
+            okText="确定"
+            cancelText="取消"
+          >
+            <Button danger>删除</Button>
+          </Popconfirm>
         </div>
       ),
     },

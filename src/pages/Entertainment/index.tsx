@@ -1,5 +1,5 @@
 import { PageContainer } from '@ant-design/pro-components';
-import { Button, Drawer, Form, Table, Input } from 'antd';
+import { Button, Drawer, Form, Table, Input, Popconfirm } from 'antd';
 import { useEffect, useState } from 'react';
 import { $get } from '../../utils/request';
 import styles from './index.less';
@@ -59,9 +59,15 @@ const EntertainmentPage: React.FC = () => {
       title: '设置',
       render: (_value: any) => (
         <div className={styles.modify}>
-          <Button danger onClick={() => deleteUser(_value?.messageID)}>
-            删除
-          </Button>
+          <Popconfirm
+            title="确定删除吗？"
+            onConfirm={() => deleteUser(_value?.id)}
+            onCancel={() => {}}
+            okText="确定"
+            cancelText="取消"
+          >
+            <Button danger>删除</Button>
+          </Popconfirm>
         </div>
       ),
     },
