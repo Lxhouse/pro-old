@@ -8,7 +8,7 @@ export default class BasicDemo extends React.Component {
   static propTypes = {
     // uploadUrl: PropTypes.string,
     onChange: PropTypes.func,
-    echoData: PropTypes.string,
+    value: PropTypes.string,
   };
 
   static defaultProps = {
@@ -23,7 +23,7 @@ export default class BasicDemo extends React.Component {
     this.isLivinig = true;
     this.setState({
       editorState: BraftEditor.createEditorState(
-        this.props.echoData ? this.props.echoData : '<p></p>',
+        this.props.value ? this.props.value : '<p></p>',
       ),
     });
   }
@@ -49,7 +49,7 @@ export default class BasicDemo extends React.Component {
   setEditorContentAsync = () => {
     if (this.isLivinig) {
       this.setState({
-        editorState: BraftEditor.createEditorState('我是显示的内容'),
+        editorState: BraftEditor.createEditorState(''),
       });
     }
     return null;

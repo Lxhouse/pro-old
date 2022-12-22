@@ -2,6 +2,8 @@ import { PageContainer } from '@ant-design/pro-components';
 import { Button, Drawer, Form, Input, Table, Popconfirm } from 'antd';
 import { useEffect, useState } from 'react';
 import { $get, $post } from '../../utils/request';
+// 引入编辑器样式
+import 'braft-editor/dist/index.css';
 import styles from './index.less';
 import RichText from './RichText';
 
@@ -129,6 +131,15 @@ const SciencePage: React.FC = () => {
               <Form.Item
                 label="文章标题"
                 name="title"
+                // rules={[
+                //   { required: true, message: 'Please input your username!' },
+                // ]}
+              >
+                <Input />
+              </Form.Item>
+              <Form.Item
+                label="文章简介"
+                name="introduce"
                 // rules={[
                 //   { required: true, message: 'Please input your username!' },
                 // ]}

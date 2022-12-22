@@ -7,7 +7,7 @@ export default defineConfig({
   initialState: {},
   request: {},
   layout: {
-    title: '@umijs/max',
+    title: '管理员后台系统',
   },
   routes: [
     {
@@ -15,9 +15,10 @@ export default defineConfig({
       redirect: '/home',
     },
     {
-      name: '首页',
+      name: '登录',
       path: '/home',
-      component: './Home',
+      layout: false,
+      component: './Login',
     },
     // {
     //   name: '权限演示',

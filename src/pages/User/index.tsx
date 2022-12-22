@@ -302,7 +302,7 @@ const UserPage: React.FC = () => {
               </Form.Item>
               <Form.Item
                 label="有无病史"
-                name="heartScope"
+                name="medicalHistory"
                 // rules={[
                 //   { required: true, message: 'Please input your username!' },
                 // ]}
