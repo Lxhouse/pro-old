@@ -1,9 +1,20 @@
-import styles from './index.less';
-import { Button, Form, Input } from 'antd';
 import { $get } from '@/utils/request';
+import { Button, Form, Input, message } from 'antd';
+import { useNavigate } from 'umi';
+import styles from './index.less';
 const Login = () => {
+  let navigate = useNavigate();
+  const jump = () => {
+    navigate('/Info', { replace: true });
+  };
   const onFinish = (values: any) => {
-    $get('/admin/login', { values }).then(() => {});
+    $get('/admin/login', { values })
+      .then(() => {
+        jump();
+      })
+      .catch(() => {
+        message.error('请检查账号密码！');
+      });
   };
 
   return (
@@ -35,7 +46,7 @@ const Login = () => {
 
         <Form.Item wrapperCol={{ offset: 8, span: 16 }}>
           <Button type="primary" htmlType="submit">
-            Submit
+            确认
           </Button>
         </Form.Item>
       </Form>

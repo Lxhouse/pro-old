@@ -1,7 +1,7 @@
-import 'braft-editor/dist/index.css';
-import React from 'react';
-import PropTypes from 'prop-types';
 import BraftEditor from 'braft-editor';
+import 'braft-editor/dist/index.css';
+import PropTypes from 'prop-types';
+import React from 'react';
 import styles from './index.less';
 
 export default class BasicDemo extends React.Component {

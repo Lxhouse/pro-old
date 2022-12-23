@@ -1,16 +1,17 @@
 import { PageContainer } from '@ant-design/pro-components';
 import {
   Button,
+  DatePicker,
   Drawer,
   Form,
   Input,
-  Table,
-  Radio,
-  DatePicker,
+  message,
   Popconfirm,
+  Radio,
+  Table,
 } from 'antd';
-import { useEffect, useState } from 'react';
 import moment from 'moment';
+import { useEffect, useState } from 'react';
 import { $get, $post } from '../../utils/request';
 import styles from './index.less';
 
@@ -57,6 +58,11 @@ const UserPage: React.FC = () => {
   const deleteUser = (_id: number) => {
     $post('/admin/deleteUserInfo', { id: _id }).then(() => {
       getAllList();
+    });
+  };
+  const setAdmin = (_value: any) => {
+    $post('/admin/setAdmin', _value).then(() => {
+      message.success('设置成功！');
     });
   };
   useEffect(() => {
@@ -158,6 +164,7 @@ const UserPage: React.FC = () => {
           >
             修改
           </Button>
+
           <Popconfirm
             title="确定删除吗？"
             onConfirm={() => deleteUser(_value?.id)}
@@ -167,6 +174,14 @@ const UserPage: React.FC = () => {
           >
             <Button danger>删除</Button>
           </Popconfirm>
+          <Button
+            type="primary"
+            onClick={() => {
+              setAdmin(_value);
+            }}
+          >
+            设为管理员
+          </Button>
         </div>
       ),
     },

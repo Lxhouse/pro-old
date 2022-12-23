@@ -1,9 +1,7 @@
 import { PageContainer } from '@ant-design/pro-components';
-import { Button, Drawer, Form, Input, Table, Popconfirm } from 'antd';
+import { Button, Drawer, Form, Input, Popconfirm, Table } from 'antd';
 import { useEffect, useState } from 'react';
 import { $get, $post } from '../../utils/request';
-// 引入编辑器样式
-import 'braft-editor/dist/index.css';
 import styles from './index.less';
 import RichText from './RichText';
 
