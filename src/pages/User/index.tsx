@@ -5,7 +5,6 @@ import {
   Drawer,
   Form,
   Input,
-  message,
   Popconfirm,
   Radio,
   Table,
@@ -60,11 +59,7 @@ const UserPage: React.FC = () => {
       getAllList();
     });
   };
-  const setAdmin = (_value: any) => {
-    $post('/admin/setAdmin', _value).then(() => {
-      message.success('设置成功！');
-    });
-  };
+
   useEffect(() => {
     getAllList();
   }, [drawerOpen]);
@@ -174,14 +169,6 @@ const UserPage: React.FC = () => {
           >
             <Button danger>删除</Button>
           </Popconfirm>
-          <Button
-            type="primary"
-            onClick={() => {
-              setAdmin(_value);
-            }}
-          >
-            设为管理员
-          </Button>
         </div>
       ),
     },

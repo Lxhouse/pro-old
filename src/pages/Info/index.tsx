@@ -1,16 +1,17 @@
 import { PageContainer } from '@ant-design/pro-components';
 import {
   Button,
+  DatePicker,
   Drawer,
   Form,
   Input,
-  Table,
-  Radio,
-  DatePicker,
+  message,
   Popconfirm,
+  Radio,
+  Table,
 } from 'antd';
-import { useEffect, useState } from 'react';
 import moment from 'moment';
+import { useEffect, useState } from 'react';
 import { $get, $post } from '../../utils/request';
 import styles from './index.less';
 
@@ -20,6 +21,11 @@ const InfoPage: React.FC = () => {
   const [dataSource, setDataSource] = useState<any[]>([]);
   const changeDrawerOpen = () => {
     setDrawerOpen(!drawerOpen);
+  };
+  const setAdmin = (_value: any) => {
+    $post('/admin/setAdmin', _value).then(() => {
+      message.success('设置成功！');
+    });
   };
   // const getAllList = () => {
   //   $get('/admin/getUserInfoList').then((res) => {
@@ -137,6 +143,14 @@ const InfoPage: React.FC = () => {
           >
             <Button danger>删除</Button>
           </Popconfirm>
+          <Button
+            type="primary"
+            onClick={() => {
+              setAdmin(_value);
+            }}
+          >
+            设为管理员
+          </Button>
         </div>
       ),
     },
