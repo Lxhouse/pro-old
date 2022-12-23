@@ -141,10 +141,13 @@ const InfoPage: React.FC = () => {
             okText="确定"
             cancelText="取消"
           >
-            <Button danger>删除</Button>
+            <Button style={{ marginLeft: 5 }} danger>
+              删除
+            </Button>
           </Popconfirm>
           <Button
             type="primary"
+            style={{ marginLeft: 5 }}
             onClick={() => {
               setAdmin(_value);
             }}
