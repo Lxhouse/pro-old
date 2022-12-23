@@ -1,5 +1,6 @@
 import { $get } from '@/utils/request';
 import { Button, Form, Input, message } from 'antd';
+import { Header } from 'antd/es/layout/layout';
 import { useNavigate } from 'umi';
 import styles from './index.less';
 const Login = () => {
@@ -9,7 +10,8 @@ const Login = () => {
   };
   const onFinish = (values: any) => {
     $get('/admin/login', { values })
-      .then(() => {
+      .then((res) => {
+        localStorage.setItem('user', res.data?.data?.role || '');
         jump();
       })
       .catch(() => {
@@ -19,6 +21,9 @@ const Login = () => {
 
   return (
     <div className={styles.warp}>
+      <Header style={{ marginBottom: 30, fontSize: 30 }}>
+        易老APP 后台管理系统
+      </Header>
       <Form
         name="basic"
         // labelCol={{ span: 8 }}

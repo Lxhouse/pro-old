@@ -145,15 +145,17 @@ const InfoPage: React.FC = () => {
               删除
             </Button>
           </Popconfirm>
-          <Button
-            type="primary"
-            style={{ marginLeft: 5 }}
-            onClick={() => {
-              setAdmin(_value);
-            }}
-          >
-            设为管理员
-          </Button>
+          {localStorage.getItem('user') === 'mainAdmin' && (
+            <Button
+              type="primary"
+              style={{ marginLeft: 5 }}
+              onClick={() => {
+                setAdmin(_value);
+              }}
+            >
+              设为管理员
+            </Button>
+          )}
         </div>
       ),
     },
@@ -171,7 +173,7 @@ const InfoPage: React.FC = () => {
         >
           新增
         </Button> */}
-        <Table dataSource={dataSource} columns={columns} />;
+        <Table dataSource={dataSource} columns={columns} />
       </div>
       <Drawer
         title="信息修改"
