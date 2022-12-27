@@ -50,6 +50,11 @@ export default defineConfig({
       path: '/entertainment',
       component: './Entertainment',
     },
+    {
+      name: '药品管理',
+      path: '/drug',
+      component: './drug',
+    },
   ],
   npmClient: 'yarn',
 });
